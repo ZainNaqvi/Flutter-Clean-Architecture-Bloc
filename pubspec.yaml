@@ -9,8 +9,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # Functional programming tools
-  dartz: ^0.10.1
   # Object equality comparison
   equatable: ^2.0.5
   # State management for Flutter
@@ -18,15 +16,22 @@ dependencies:
   # Dependency injection
   get_it: ^7.6.4
   # HTTP requests
-  http: ^1.1.0
-  # Persistent storage for key-value pairs
-  shared_preferences: ^2.2.2
+  retrofit: ^4.0.3
+  # SQLite database library for Flutter
+  floor: ^1.4.2
+  # Internationalization and localization support
+  intl: ^0.19.0
+  # Cached network image loading for Flutter
+  cached_network_image: ^3.3.0
+  dio: ^5.4.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^5.4.3
   flutter_lints: ^2.0.0
+  retrofit_generator: ^8.0.5
+  floor_generator: ^1.4.2
+  build_runner: ^2.4.7
 
 flutter:
   uses-material-design: true
