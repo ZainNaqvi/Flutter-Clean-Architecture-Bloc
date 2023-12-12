@@ -15,6 +15,7 @@ class RemoteArticlesBloc
       GetArticles event, Emitter<RemoteArticlesState> emit) async {
     final dataState = await _getArticleUseCase();
     if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
+      print("Got: Data ${dataState.data![1]}");
       emit(RemoteArticlesDone(dataState.data!));
     }
     if (dataState is DataFailed) {
