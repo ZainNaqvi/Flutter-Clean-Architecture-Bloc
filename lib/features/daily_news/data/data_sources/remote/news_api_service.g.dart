@@ -33,12 +33,13 @@ class _NewsApiService implements NewsApiService {
       r'category': category,
     };
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
+
+    Map<String, dynamic>? _data;
+
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<HttpResponse<List<ArticleModel>>>(Options(
+        _setStreamType<HttpResponse<Map<String, dynamic>>>(Options(
       method: 'GET',
-      headers: _headers,
+      headers: {},
       extra: _extra,
     )
             .compose(
@@ -52,16 +53,21 @@ class _NewsApiService implements NewsApiService {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    print(
-        "Printing result from new_api_service.g.dart: ${_result.data?['articles'][3]}");
-    List<ArticleModel> value = (_result.data?['articles'] as List?)
-            ?.map<ArticleModel>(
-                (dynamic i) => ArticleModel.fromJson(i as Map<String, dynamic>))
-            .toList() ??
-        [];
 
-    final httpResponse = HttpResponse(value, _result);
-    return httpResponse;
+    // Check if _result.data is not null
+    if (_result.data != null) {
+      // Assuming the structure is a map with a 'articles' key containing a list
+      var articlesList = (_result.data!['articles'] as List)
+          .map((dynamic i) => ArticleModel.fromJson(i as Map<String, dynamic>))
+          .toList();
+
+      final httpResponse = HttpResponse(articlesList, _result);
+
+      return httpResponse;
+    } else {
+      // Handle the case where _result.data is null
+      throw Exception("No data received");
+    }
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

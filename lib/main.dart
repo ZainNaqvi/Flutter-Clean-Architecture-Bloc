@@ -6,6 +6,8 @@ import 'package:flutter_clean_architecture/features/daily_news/presentation/bloc
 import 'package:flutter_clean_architecture/features/daily_news/presentation/pages/home/daily_news.dart';
 import 'package:flutter_clean_architecture/injection_container.dart';
 
+import 'config/routes/routes.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDependencies();
@@ -23,6 +25,7 @@ class MainApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: theme(),
         home: const DailyNews(),
+        onGenerateRoute: AppRoutes.onGenerateRoutes,
       ),
     );
   }

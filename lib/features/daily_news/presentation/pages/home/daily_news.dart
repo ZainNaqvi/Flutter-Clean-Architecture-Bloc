@@ -1,29 +1,38 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_clean_architecture/features/daily_news/presentation/bloc/article/remote/remote_article_bloc.dart';
-import 'package:flutter_clean_architecture/features/daily_news/presentation/bloc/article/remote/remote_article_state.dart';
+
+import '../../../domain/entities/article.dart';
+import '../../bloc/article/remote/remote_article_bloc.dart';
+import '../../bloc/article/remote/remote_article_state.dart';
+import '../../widgets/article_tile.dart';
 
 class DailyNews extends StatelessWidget {
-  const DailyNews({super.key});
+  const DailyNews({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppbar(),
+      appBar: _buildAppbar(context),
       body: _buildBody(),
     );
   }
 
-  _buildAppbar() {
+  _buildAppbar(BuildContext context) {
     return AppBar(
       title: const Text(
         'Daily News',
-        style: TextStyle(
-          color: Colors.black,
-        ),
+        style: TextStyle(color: Colors.black),
       ),
+      actions: [
+        GestureDetector(
+          onTap: () => _onShowSavedArticlesViewTapped(context),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 14),
+            child: Icon(Icons.bookmark, color: Colors.black),
+          ),
+        ),
+      ],
     );
   }
 
@@ -38,133 +47,26 @@ class DailyNews extends StatelessWidget {
         }
         if (state is RemoteArticlesDone) {
           return ListView.builder(
-            itemCount: state.articles!.length,
             itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                child: Row(
-                  children: [
-                    state.articles![index].urlToImage == ''
-                        ? Padding(
-                            padding: const EdgeInsetsDirectional.only(end: 14),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: ColoredBox(
-                                color: Colors.grey.withOpacity(0.08),
-                                child: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width / 3.4,
-                                  height: 150,
-                                  child: Icon(Icons.image_not_supported),
-                                ),
-                              ),
-                            ),
-                          )
-                        : CachedNetworkImage(
-                            imageUrl: state.articles![index].urlToImage!,
-                            imageBuilder: (context, imageProvider) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsetsDirectional.only(end: 14),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 3.6,
-                                    height: 150,
-                                    decoration: BoxDecoration(
-                                      color: Colors.black.withOpacity(0.08),
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) => Padding(
-                              padding:
-                                  const EdgeInsetsDirectional.only(end: 14),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  height: double.maxFinite,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.08),
-                                  ),
-                                  child: const CupertinoActivityIndicator(),
-                                ),
-                              ),
-                            ),
-                            errorWidget: (context, url, downloadProgress) =>
-                                Padding(
-                              padding:
-                                  const EdgeInsetsDirectional.only(end: 14),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  height: double.maxFinite,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.08),
-                                  ),
-                                  child: const Icon(Icons.error),
-                                ),
-                              ),
-                            ),
-                          ),
-                    const SizedBox(width: 3),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 200,
-                          child: Text(
-                            state.articles![index].title!,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: 200,
-                          child: Text(
-                            state.articles![index].description!,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: 200,
-                          child: Row(
-                            children: [
-                              const Icon(Icons.published_with_changes_rounded),
-                              const SizedBox(width: 8),
-                              Text(
-                                state.articles![index].publishedAt!,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              return ArticleWidget(
+                article: state.articles![index],
+                onArticlePressed: (article) =>
+                    _onArticlePressed(context, article),
               );
             },
+            itemCount: state.articles!.length,
           );
         }
         return const SizedBox();
       },
     );
+  }
+
+  void _onArticlePressed(BuildContext context, ArticleEntity article) {
+    Navigator.pushNamed(context, '/ArticleDetails', arguments: article);
+  }
+
+  void _onShowSavedArticlesViewTapped(BuildContext context) {
+    Navigator.pushNamed(context, '/SavedArticles');
   }
 }

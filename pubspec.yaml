@@ -24,6 +24,8 @@ dependencies:
   # Cached network image loading for Flutter
   cached_network_image: ^3.3.0
   dio: ^5.4.0
+  flutter_hooks: ^0.20.3
+  ionicons: ^0.2.2
 
 dev_dependencies:
   flutter_test:

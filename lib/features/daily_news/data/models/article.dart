@@ -1,5 +1,8 @@
+import 'package:floor/floor.dart';
+
 import '../../domain/entities/article.dart';
 
+@Entity(tableName: 'article', primaryKeys: ['id'])
 class ArticleModel extends ArticleEntity {
   const ArticleModel({
     required this.id,
@@ -29,8 +32,21 @@ class ArticleModel extends ArticleEntity {
       description: json['description'] ?? '',
       url: json['url'] ?? '',
       urlToImage: json['urlToImage'] ?? '',
-      publishedAt: json['publishedAt'] ?? '', // Modify if it's a DateTime
+      publishedAt: json['publishedAt'] ?? '',
       content: json['content'] ?? '',
+    );
+  }
+
+  factory ArticleModel.fromEntity(ArticleEntity entity) {
+    return ArticleModel(
+      id: '',
+      author: entity.author ?? '',
+      title: entity.title ?? '',
+      description: entity.description ?? '',
+      url: entity.url ?? '',
+      urlToImage: entity.urlToImage ?? '',
+      publishedAt: entity.publishedAt ?? '',
+      content: entity.content ?? '',
     );
   }
 }
